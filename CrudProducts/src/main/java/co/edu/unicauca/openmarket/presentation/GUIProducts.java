@@ -21,7 +21,6 @@ public class GUIProducts extends javax.swing.JFrame {
         initComponents();
         this.productService = productService;
         stateInitial();
-
     }
 
     /**

@@ -20,35 +20,16 @@ import java.util.logging.Logger;
  */
 public class ProductRepository implements IProductRepository {
 
-    private Connection conn;
+    private Repository repos = new Repository();
 
     public ProductRepository() {
-        initDatabase();
-    }
-
-    @Override
-    public boolean save(Product newProduct) {
-
-        try {
-            //Validate product
-            if (newProduct == null || newProduct.getName().isBlank()) {
-                return false;
-            }
-            //this.connect();
-
-            String sql = "INSERT INTO products ( name, description ) "
-                    + "VALUES ( ?, ? )";
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, newProduct.getName());
-            pstmt.setString(2, newProduct.getDescription());
-            pstmt.executeUpdate();
-            //this.disconnect();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductRepository.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
+        String sql = "CREATE TABLE IF NOT EXISTS products (\n"
+                + "	productId integer PRIMARY KEY AUTOINCREMENT,\n"
+                + "	name text NOT NULL,\n"
+                + "	description text NULL\n"
+                + ");";
+        
+        repos.initDatabase(sql);
     }
 
     @Override
@@ -59,7 +40,7 @@ public class ProductRepository implements IProductRepository {
             String sql = "SELECT * FROM products";
             //this.connect();
 
-            Statement stmt = conn.createStatement();
+            Statement stmt = repos.getConn().createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Product newProduct = new Product();
@@ -76,49 +57,30 @@ public class ProductRepository implements IProductRepository {
         }
         return products;
     }
-
-    private void initDatabase() {
-        // SQL statement for creating a new table
-        String sql = "CREATE TABLE IF NOT EXISTS products (\n"
-                + "	productId integer PRIMARY KEY AUTOINCREMENT,\n"
-                + "	name text NOT NULL,\n"
-                + "	description text NULL\n"
-                + ");";
+    
+    @Override
+    public boolean save(Product newProduct) {
 
         try {
-            this.connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-            //this.disconnect();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductRepository.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void connect() {
-        // SQLite connection string
-        //String url = "jdbc:sqlite:./myDatabase.db"; //Para Linux/Mac
-        //String url = "jdbc:sqlite:C:/sqlite/db/myDatabase.db"; //Para Windows
-        String url = "jdbc:sqlite::memory:";
-
-        try {
-            conn = DriverManager.getConnection(url);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductRepository.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void disconnect() {
-        try {
-            if (conn != null) {
-                conn.close();
+            //Validate product
+            if (newProduct == null || newProduct.getName().isBlank()) {
+                return false;
             }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
+            //this.connect();
 
+            String sql = "INSERT INTO products ( name, description ) "
+                    + "VALUES ( ?, ? )";
+
+            PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
+            pstmt.setString(1, newProduct.getName());
+            pstmt.setString(2, newProduct.getDescription());
+            pstmt.executeUpdate();
+            //this.disconnect();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override
@@ -134,7 +96,7 @@ public class ProductRepository implements IProductRepository {
                     + "SET name=?, description=? "
                     + "WHERE productId = ?";
 
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
             pstmt.setString(1, product.getName());
             pstmt.setString(2, product.getDescription());
             pstmt.setLong(3, id);
@@ -159,7 +121,7 @@ public class ProductRepository implements IProductRepository {
             String sql = "DELETE FROM products "
                     + "WHERE productId = ?";
 
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
             //this.disconnect();
@@ -177,7 +139,7 @@ public class ProductRepository implements IProductRepository {
             String sql = "SELECT * FROM products  "
                     + "WHERE productId = ?";
 
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
             pstmt.setLong(1, id);
 
             ResultSet res = pstmt.executeQuery();
@@ -205,9 +167,9 @@ public class ProductRepository implements IProductRepository {
         try {
 
             String sql = "SELECT * FROM products  "
-                    + "WHERE productName = ?";
+                    + "WHERE name = ?";
 
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
             pstmt.setString(1, name);
 
             ResultSet res = pstmt.executeQuery();

@@ -68,6 +68,7 @@ public class GUIProductsFind extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         rdoId = new javax.swing.JRadioButton();
         rdoName = new javax.swing.JRadioButton();
+        rdoCategoria = new javax.swing.JRadioButton();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         btnSearchAll = new javax.swing.JButton();
@@ -105,8 +106,12 @@ public class GUIProductsFind extends javax.swing.JDialog {
         pnlNorth.add(rdoId);
 
         buttonGroup1.add(rdoName);
-        rdoName.setText("Nombre del producto");
+        rdoName.setText("Nombre");
         pnlNorth.add(rdoName);
+
+        buttonGroup1.add(rdoCategoria);
+        rdoCategoria.setText("Categoría");
+        pnlNorth.add(rdoCategoria);
 
         txtSearch.setPreferredSize(new java.awt.Dimension(62, 32));
         pnlNorth.add(txtSearch);
@@ -152,8 +157,18 @@ public class GUIProductsFind extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSearchAllActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        
         List<Product> products = new ArrayList<>();
-        products.add(productService.findProductById(parseLong(txtSearch.getText())));
+        
+        if(rdoId.isSelected())
+        {
+            products.add(productService.findProductById(Long.valueOf(txtSearch.getText())));
+        }
+        if(rdoName.isSelected())
+        {
+            products.add(productService.findProductByName(txtSearch.getText())); //Search by name   
+        }
+        
         fillTable(products);
     }//GEN-LAST:event_btnSearchActionPerformed
 
@@ -169,6 +184,7 @@ public class GUIProductsFind extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlCenter;
     private javax.swing.JPanel pnlNorth;
+    private javax.swing.JRadioButton rdoCategoria;
     private javax.swing.JRadioButton rdoId;
     private javax.swing.JRadioButton rdoName;
     private javax.swing.JTable tblProducts;

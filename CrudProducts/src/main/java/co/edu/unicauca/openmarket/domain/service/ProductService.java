@@ -53,6 +53,11 @@ public class ProductService {
         return repository.findById(id);
     }
     
+    public Product findProductByName(String name){
+        return repository.findByName(name);
+    }
+    
+    
     public boolean deleteProduct(Long id){
         return repository.delete(id);
     }
