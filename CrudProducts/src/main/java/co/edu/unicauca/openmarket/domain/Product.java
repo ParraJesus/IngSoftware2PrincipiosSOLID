@@ -6,12 +6,28 @@ package co.edu.unicauca.openmarket.domain;
  */
 public class Product {
 
+    /**
+     * @return the categoryId
+     */
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    /**
+     * @param categoryId the categoryId to set
+     */
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
 
     private Long productId;
 
     private String name;
     
     private String description;
+    
+    private Long categoryId;
     
     private double price;
     
@@ -20,6 +36,7 @@ public class Product {
     private Location location;
     
     private User user;
+    
 
     public Product(Long productId, String name, String description, double price) {
         this.productId = productId;

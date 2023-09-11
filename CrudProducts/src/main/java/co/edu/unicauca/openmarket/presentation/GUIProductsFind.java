@@ -7,7 +7,6 @@ package co.edu.unicauca.openmarket.presentation;
 
 import co.edu.unicauca.openmarket.domain.Product;
 import co.edu.unicauca.openmarket.domain.service.ProductService;
-import static java.lang.Long.parseLong;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -33,7 +32,7 @@ public class GUIProductsFind extends javax.swing.JDialog {
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
                 new String[]{
-                    "Id", "Name", "Description"
+                    "Id", "Name", "Description", "CategoryId"
                 }
         ));
     }
@@ -42,11 +41,12 @@ public class GUIProductsFind extends javax.swing.JDialog {
         initializeTable();
         DefaultTableModel model = (DefaultTableModel) tblProducts.getModel();
 
-        Object rowData[] = new Object[3];//No columnas
+        Object rowData[] = new Object[4];//No columnas
         for (int i = 0; i < listProducts.size(); i++) {
             rowData[0] = listProducts.get(i).getProductId();
             rowData[1] = listProducts.get(i).getName();
             rowData[2] = listProducts.get(i).getDescription();
+            rowData[3] = listProducts.get(i).getCategoryId();
             
             model.addRow(rowData);
         }
@@ -167,6 +167,10 @@ public class GUIProductsFind extends javax.swing.JDialog {
         if(rdoName.isSelected())
         {
             products.add(productService.findProductByName(txtSearch.getText())); //Search by name   
+        }
+        if(rdoCategoria.isSelected())
+        {
+            products.add(productService.findProductByCategory(Long.valueOf(txtSearch.getText()))); //Search by name   
         }
         
         fillTable(products);

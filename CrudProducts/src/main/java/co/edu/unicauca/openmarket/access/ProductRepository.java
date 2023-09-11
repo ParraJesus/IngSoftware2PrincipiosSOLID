@@ -1,8 +1,6 @@
 package co.edu.unicauca.openmarket.access;
 
 import co.edu.unicauca.openmarket.domain.Product;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +24,9 @@ public class ProductRepository implements IProductRepository {
         String sql = "CREATE TABLE IF NOT EXISTS products (\n"
                 + "	productId integer PRIMARY KEY AUTOINCREMENT,\n"
                 + "	name text NOT NULL,\n"
-                + "	description text NULL\n"
+                + "	description text NULL,\n"
+                + "	categoryId integer NULL,\n"
+                + "     FOREIGN KEY (categoryId) REFERENCES category (categoryId)"
                 + ");";
         
         repos.initDatabase(sql);
@@ -47,7 +47,8 @@ public class ProductRepository implements IProductRepository {
                 newProduct.setProductId(rs.getLong("productId"));
                 newProduct.setName(rs.getString("name"));
                 newProduct.setDescription(rs.getString("description"));
-
+                newProduct.setCategoryId(rs.getLong("categoryId"));
+                
                 products.add(newProduct);
             }
             //this.disconnect();
@@ -67,14 +68,28 @@ public class ProductRepository implements IProductRepository {
                 return false;
             }
             //this.connect();
+            Long catId = (long) 0;
+            String sql1 = "SELECT * FROM categories "
+                    + "where categoryId = ?";
 
-            String sql = "INSERT INTO products ( name, description ) "
-                    + "VALUES ( ?, ? )";
+            PreparedStatement pstmt1 = repos.getConn().prepareStatement(sql1);
+            pstmt1.setLong(1, catId);
+            System.out.print(catId);
+            pstmt1.executeUpdate();
+            
+            if(catId != newProduct.getCategoryId())
+            {
+                return false;
+            }
 
-            PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
-            pstmt.setString(1, newProduct.getName());
-            pstmt.setString(2, newProduct.getDescription());
-            pstmt.executeUpdate();
+            String sql2 = "INSERT INTO products ( name, description, categoryId ) "
+                    + "VALUES ( ?, ? , ?)";
+
+            PreparedStatement pstmt2 = repos.getConn().prepareStatement(sql2);
+            pstmt2.setString(1, newProduct.getName());
+            pstmt2.setString(2, newProduct.getDescription());
+            pstmt2.setLong(3,(Long) newProduct.getCategoryId());
+            pstmt2.executeUpdate();
             //this.disconnect();
             return true;
         } catch (SQLException ex) {
@@ -93,13 +108,14 @@ public class ProductRepository implements IProductRepository {
             //this.connect();
 
             String sql = "UPDATE  products "
-                    + "SET name=?, description=? "
+                    + "SET name=?, description=? , categoryId = ?"
                     + "WHERE productId = ?";
 
             PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
             pstmt.setString(1, product.getName());
             pstmt.setString(2, product.getDescription());
-            pstmt.setLong(3, id);
+            pstmt.setLong(3,(Long) product.getCategoryId());
+            pstmt.setLong(4, id);
             pstmt.executeUpdate();
             //this.disconnect();
             return true;
@@ -149,6 +165,9 @@ public class ProductRepository implements IProductRepository {
                 prod.setProductId(res.getLong("productId"));
                 prod.setName(res.getString("name"));
                 prod.setDescription(res.getString("description"));
+                prod.setCategoryId(res.getLong("categoryId"));
+                
+                
                 return prod;
             } else {
                 return null;
@@ -179,6 +198,39 @@ public class ProductRepository implements IProductRepository {
                 prod.setProductId(res.getLong("productId"));
                 prod.setName(res.getString("name"));
                 prod.setDescription(res.getString("description"));
+                prod.setCategoryId(res.getLong("categoryId"));
+                return prod;
+            } else {
+                return null;
+            }
+            //this.disconnect();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @Override
+    public Product findByCategory(Long id) {
+        try {
+
+            String sql = "SELECT * FROM products  "
+                    + "WHERE categoryId = ?";
+
+            PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
+            pstmt.setLong(1, id);
+
+            ResultSet res = pstmt.executeQuery();
+
+            if (res.next()) {
+                Product prod = new Product();
+                prod.setProductId(res.getLong("productId"));
+                prod.setName(res.getString("name"));
+                prod.setDescription(res.getString("description"));
+                prod.setCategoryId(res.getLong("categoryId"));
+                
+                
                 return prod;
             } else {
                 return null;

@@ -1,29 +1,24 @@
 package co.edu.unicauca.openmarket.presentation;
 
-import co.edu.unicauca.openmarket.domain.Product;
+import co.edu.unicauca.openmarket.domain.Category;
 import co.edu.unicauca.openmarket.domain.service.CategoryService;
 import co.edu.unicauca.openmarket.domain.service.ProductService;
 import co.edu.unicauca.openmarket.infra.Messages;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Libardo Pantoja
- */
-public class GUIProducts extends javax.swing.JFrame {
+public class GUICategories extends javax.swing.JFrame {
 
     private ProductService productService;
     private CategoryService categoryService;
+    
     private boolean addOption;
 
     /**
      * Creates new form GUIProducts
      */
-    public GUIProducts(ProductService productService, CategoryService categoryService) {
+    public GUICategories(CategoryService categoryService) {
         initComponents();
-        this.productService = productService;
         this.categoryService = categoryService;
-        
         stateInitial();
     }
 
@@ -37,7 +32,6 @@ public class GUIProducts extends javax.swing.JFrame {
     private void initComponents() {
 
         pnlSouth = new javax.swing.JPanel();
-        btnCategoria = new javax.swing.JButton();
         btnNuevo = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
@@ -50,24 +44,10 @@ public class GUIProducts extends javax.swing.JFrame {
         txtId = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtDescription = new javax.swing.JTextArea();
-        jLabel4 = new javax.swing.JLabel();
-        txtCategoryId = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Productos");
+        setTitle("Categorías");
 
         pnlSouth.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        btnCategoria.setText("Categorías");
-        btnCategoria.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCategoriaActionPerformed(evt);
-            }
-        });
-        pnlSouth.add(btnCategoria);
 
         btnNuevo.setText("Nuevo");
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
@@ -128,7 +108,7 @@ public class GUIProducts extends javax.swing.JFrame {
         getContentPane().add(pnlSouth, java.awt.BorderLayout.SOUTH);
 
         pnlCenter.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        pnlCenter.setLayout(new java.awt.GridLayout(4, 2));
+        pnlCenter.setLayout(new java.awt.GridLayout(3, 2));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("*Id:");
@@ -145,23 +125,6 @@ public class GUIProducts extends javax.swing.JFrame {
         jLabel2.setText("*Nombre:");
         pnlCenter.add(jLabel2);
         pnlCenter.add(txtName);
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("Descripción:");
-        pnlCenter.add(jLabel3);
-
-        txtDescription.setColumns(20);
-        txtDescription.setRows(5);
-        jScrollPane1.setViewportView(txtDescription);
-
-        pnlCenter.add(jScrollPane1);
-
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText("Categoría");
-        pnlCenter.add(jLabel4);
-        jLabel4.getAccessibleContext().setAccessibleName("Categoría");
-
-        pnlCenter.add(txtCategoryId);
 
         getContentPane().add(pnlCenter, java.awt.BorderLayout.CENTER);
 
@@ -185,7 +148,7 @@ public class GUIProducts extends javax.swing.JFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         if (txtName.getText().trim().equals("")) {
-            Messages.showMessageDialog("Debe ingresar el nombre del producto", "Atención");
+            Messages.showMessageDialog("Debe ingresar el nombre de la categoría", "Atención");
             txtName.requestFocus();
             return;
         }
@@ -210,15 +173,14 @@ public class GUIProducts extends javax.swing.JFrame {
         if (txtId.getText().trim().equals("")) {
             return;
         }
-        Long productId = Long.parseLong(txtId.getText());
-        Product prod = productService.findProductById(productId);
-        if (prod == null) {
+        Long categoryId = Long.parseLong(txtId.getText());
+        Category cat = categoryService.findCategoryById(categoryId);
+        if (cat == null) {
             Messages.showMessageDialog("El identificador del producto no existe", "Error");
             txtId.setText("");
             txtId.requestFocus();
         } else {
-            txtName.setText(prod.getName());
-            txtDescription.setText(prod.getDescription());
+            txtName.setText(cat.getName());
         }
     }//GEN-LAST:event_txtIdFocusLost
 
@@ -231,7 +193,7 @@ public class GUIProducts extends javax.swing.JFrame {
         }
         Long productId = Long.parseLong(id);
         if (Messages.showConfirmDialog("Está seguro que desea eliminar este producto?", "Confirmación") == JOptionPane.YES_NO_OPTION) {
-            if (productService.deleteProduct(productId)) {
+            if (categoryService.deleteCategory(productId)) {
                 Messages.showMessageDialog("Producto eliminado con éxito", "Atención");
                 stateInitial();
                 cleanControls();
@@ -240,16 +202,10 @@ public class GUIProducts extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFindActionPerformed
-        GUIProductsFind instance = new GUIProductsFind(this, true, productService);
+        GUICategoriesFind instance = new GUICategoriesFind(this, true, categoryService);
         instance.setVisible(true);
     }//GEN-LAST:event_btnFindActionPerformed
-
-    private void btnCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriaActionPerformed
-        GUICategories instance = new GUICategories(categoryService);
-        instance.setVisible(true);
-    }//GEN-LAST:event_btnCategoriaActionPerformed
     private void stateEdit() {
-        btnCategoria.setVisible(false);
         btnNuevo.setVisible(false);
         btnEditar.setVisible(false);
         btnEliminar.setVisible(true);
@@ -259,12 +215,9 @@ public class GUIProducts extends javax.swing.JFrame {
         btnFind.setVisible(false);
         txtId.setEnabled(true);
         txtName.setEnabled(true);
-        txtDescription.setEnabled(true);
-        txtCategoryId.setEnabled(true);
     }
 
     private void stateInitial() {
-        btnCategoria.setVisible(true);
         btnNuevo.setVisible(true);
         btnEditar.setVisible(true);
         btnEliminar.setVisible(false);
@@ -274,14 +227,11 @@ public class GUIProducts extends javax.swing.JFrame {
         btnFind.setVisible(true);
         txtId.setEnabled(false);
         txtName.setEnabled(false);
-        txtDescription.setEnabled(false);
-        txtCategoryId.setEnabled(false);
 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnCategoria;
     private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
@@ -290,19 +240,13 @@ public class GUIProducts extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlCenter;
     private javax.swing.JPanel pnlSouth;
-    private javax.swing.JTextField txtCategoryId;
-    private javax.swing.JTextArea txtDescription;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 
     private void stateNew() {
-        btnCategoria.setVisible(false);
         btnNuevo.setVisible(false);
         btnEditar.setVisible(false);
         btnEliminar.setVisible(false);
@@ -312,29 +256,18 @@ public class GUIProducts extends javax.swing.JFrame {
         btnFind.setVisible(false);
         txtId.setEnabled(false);
         txtName.setEnabled(true);
-        txtDescription.setEnabled(true);
-        txtCategoryId.setEnabled(true);
 
     }
 
     private void cleanControls() {
         txtId.setText("");
         txtName.setText("");
-        txtDescription.setText("");
-        txtCategoryId.setText("");
     }
 
     private void addProduct() {
         String name = txtName.getText().trim();
-        String description = txtDescription.getText().trim();
-        Long categoryId = (long) 0;
-        if(!txtCategoryId.getText().trim().equals(""))
-        {
-            categoryId = Long.parseLong(txtCategoryId.getText().trim());
-        }
-        
-        System.out.print(description);
-        if (productService.saveProduct(name, description, categoryId)) {
+
+        if (categoryService.saveCategory(name)) {
             Messages.showMessageDialog("Se grabó con éxito", "Atención");
             cleanControls();
             stateInitial();
@@ -346,16 +279,15 @@ public class GUIProducts extends javax.swing.JFrame {
     private void editProduct() {
         String id = txtId.getText().trim();
         if (id.equals("")) {
-            Messages.showMessageDialog("Debe buscar el producto a editar", "Atención");
+            Messages.showMessageDialog("Debe buscar la categoría a editar", "Atención");
             txtId.requestFocus();
             return;
         }
         Long productId = Long.parseLong(id);
-        Product prod = new Product();
-        prod.setName(txtName.getText().trim());
-        prod.setDescription(txtDescription.getText().trim());
+        Category cat = new Category();
+        cat.setName(txtName.getText().trim());
 
-        if (productService.editProduct(productId, prod)) {
+        if (categoryService.editCategory(productId, cat)) {
             Messages.showMessageDialog("Se editó con éxito", "Atención");
             cleanControls();
             stateInitial();

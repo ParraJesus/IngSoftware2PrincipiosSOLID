@@ -1,7 +1,7 @@
 package co.edu.unicauca.openmarket.access;
 
 import java.util.List;
-import java.util.Locale.Category;
+import co.edu.unicauca.openmarket.domain.Category;
 
 /**
  *
@@ -11,9 +11,11 @@ public interface ICategoryRepository {
     
     boolean save(Category newCategory);
     
-    boolean edit(long categoryId, Category category);
+    boolean edit(long id, Category category);
     
-    boolean delete(long categoryId);
+    boolean delete(long id);
+    
+    Category findById(Long id);
     
     List<Category> findAll();
 }

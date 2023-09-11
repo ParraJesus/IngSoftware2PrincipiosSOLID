@@ -26,12 +26,11 @@ public class ProductService {
         this.repository = repository;
     }
 
-
-    public boolean saveProduct(String name, String description) {
-        
+    public boolean saveProduct(String name, String description, Long categoryId) {
         Product newProduct = new Product();
         newProduct.setName(name);
         newProduct.setDescription(description);
+        newProduct.setCategoryId(categoryId);
         
         //Validate product
         if (newProduct.getName().isBlank() ) {
@@ -51,6 +50,10 @@ public class ProductService {
     
     public Product findProductById(Long id){
         return repository.findById(id);
+    }
+    
+    public Product findProductByCategory(Long id){
+        return repository.findByCategory(id);
     }
     
     public Product findProductByName(String name){
