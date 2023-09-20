@@ -68,19 +68,6 @@ public class ProductRepository implements IProductRepository {
                 return false;
             }
             //this.connect();
-            Long catId = (long) 0;
-            String sql1 = "SELECT * FROM categories "
-                    + "where categoryId = ?";
-
-            PreparedStatement pstmt1 = repos.getConn().prepareStatement(sql1);
-            pstmt1.setLong(1, catId);
-            System.out.print(catId);
-            pstmt1.executeUpdate();
-            
-            if(catId != newProduct.getCategoryId())
-            {
-                return false;
-            }
 
             String sql2 = "INSERT INTO products ( name, description, categoryId ) "
                     + "VALUES ( ?, ? , ?)";
@@ -88,7 +75,7 @@ public class ProductRepository implements IProductRepository {
             PreparedStatement pstmt2 = repos.getConn().prepareStatement(sql2);
             pstmt2.setString(1, newProduct.getName());
             pstmt2.setString(2, newProduct.getDescription());
-            pstmt2.setLong(3,(Long) newProduct.getCategoryId());
+            pstmt2.setLong(3,newProduct.getCategoryId());
             pstmt2.executeUpdate();
             //this.disconnect();
             return true;

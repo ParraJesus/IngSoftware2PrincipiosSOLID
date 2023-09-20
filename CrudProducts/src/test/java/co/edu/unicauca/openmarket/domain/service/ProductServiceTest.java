@@ -52,14 +52,14 @@ public class ProductServiceTest {
         System.out.println("saveProduct");
         
         Product product = new Product();
-        product.setProductId((long)1);
+        product.setProductId((long) 1);
         product.setName("Kumis");
         product.setDescription("Mejor que el yogurt");
 
         Category category = new Category();
-        category.setCategoryId((long)1);
+        category.setCategoryId((long) 1);
         category.setName("Lácteos");
-        product.setCategory(category);
+        product.setCategoryId(category.getCategoryId());
 
         boolean saved = productService.saveProduct(product.getName(), product.getDescription(), category.getCategoryId());
         assertTrue(saved);
@@ -266,7 +266,7 @@ public class ProductServiceTest {
         System.out.println("editProduct");
         
         Category category = new Category();
-        category.setCategoryId(1L);
+        category.setCategoryId((long)1);
         category.setName("Lácteos");
         
         boolean saved = categoryService.saveCategory(category.getName());
@@ -275,7 +275,7 @@ public class ProductServiceTest {
         assertNotNull(c);
 
         Product product1 = new Product();
-        product1.setProductId(1L);
+        product1.setProductId((long) 1);
         product1.setName("Kumis");
         product1.setDescription("Mejor que el yogurt");
         product1.setCategory(category);
@@ -298,8 +298,10 @@ public class ProductServiceTest {
         assertNotNull(p2);
         assertEquals(product2.getProductId(), p2.getProductId());
 
+        product1.setProductId((long)1);
         product1.setName("Leche");
         product1.setDescription("Fresca");
+        product1.setCategoryId(category.getCategoryId());
 
         boolean edited = productService.editProduct(product1.getProductId(), product1);
         assertTrue(edited);
