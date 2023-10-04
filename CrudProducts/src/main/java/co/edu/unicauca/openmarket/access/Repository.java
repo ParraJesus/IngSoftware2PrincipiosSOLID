@@ -35,7 +35,7 @@ public class Repository implements IRepository {
         try {
             setConn(DriverManager.getConnection(url));
         } catch (SQLException ex) {
-            Logger.getLogger(ProductRepository.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
