@@ -1,5 +1,6 @@
 package co.edu.unicauca.openmarket.access;
 
+import co.edu.unicauca.openmarket.domain.Category;
 import co.edu.unicauca.openmarket.domain.Product;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -199,35 +200,35 @@ public class ProductRepository implements IProductRepository {
     }
 
     @Override
-    public Product findByCategory(Long id) {
+    public List<Product> findByCategory(Long id) {
+        List<Product> products = new ArrayList<>();
         try {
 
             String sql = "SELECT * FROM products  "
                     + "WHERE categoryId = ?";
+            //this.connect();
 
             PreparedStatement pstmt = repos.getConn().prepareStatement(sql);
             pstmt.setLong(1, id);
-
-            ResultSet res = pstmt.executeQuery();
-
-            if (res.next()) {
-                Product prod = new Product();
-                prod.setProductId(res.getLong("productId"));
-                prod.setName(res.getString("name"));
-                prod.setDescription(res.getString("description"));
-                prod.setCategoryId(res.getLong("categoryId"));
-                
-                
-                return prod;
-            } else {
-                return null;
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Product newProduct = new Product();
+                newProduct.setProductId(rs.getLong("productId"));
+                newProduct.setName(rs.getString("name"));
+                newProduct.setDescription(rs.getString("description"));
+                newProduct.setCategoryId(rs.getLong("categoryId"));
+                Category ca = new Category();
+                ca.setCategoryId(rs.getLong("categoryId"));
+                newProduct.setCategory(ca);
+                products.add(newProduct);
             }
             //this.disconnect();
 
         } catch (SQLException ex) {
             Logger.getLogger(ProductRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        
+        return products;
     }
 
 }

@@ -163,17 +163,17 @@ public class GUIProductsFind extends javax.swing.JDialog {
         if(rdoId.isSelected())
         {
             products.add(productService.findProductById(Long.valueOf(txtSearch.getText())));
+            fillTable(products);
         }
         if(rdoName.isSelected())
         {
-            products.add(productService.findProductByName(txtSearch.getText())); //Search by name   
+            products.add(productService.findProductByName(txtSearch.getText())); //Search by name 
+            fillTable(products);
         }
         if(rdoCategoria.isSelected())
-        {
-            products.add(productService.findProductByCategory(Long.valueOf(txtSearch.getText()))); //Search by name   
+        {        
+            fillTable(productService.findProductByCategory(Long.valueOf(txtSearch.getText()))); //Search by name
         }
-        
-        fillTable(products);
     }//GEN-LAST:event_btnSearchActionPerformed
 
  

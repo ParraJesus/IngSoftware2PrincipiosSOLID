@@ -2,7 +2,6 @@ package co.edu.unicauca.openmarket.domain.service;
 
 import co.edu.unicauca.openmarket.access.Factory;
 import co.edu.unicauca.openmarket.access.ICategoryRepository;
-import co.edu.unicauca.openmarket.access.IRepository;
 import co.edu.unicauca.openmarket.domain.Category;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;

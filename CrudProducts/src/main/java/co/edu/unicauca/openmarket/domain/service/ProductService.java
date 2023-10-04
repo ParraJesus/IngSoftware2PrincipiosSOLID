@@ -52,7 +52,7 @@ public class ProductService {
         return repository.findById(id);
     }
     
-    public Product findProductByCategory(Long id){
+    public List<Product> findProductByCategory(Long id){
         return repository.findByCategory(id);
     }
     

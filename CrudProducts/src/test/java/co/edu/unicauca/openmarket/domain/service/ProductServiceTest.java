@@ -138,7 +138,7 @@ public class ProductServiceTest {
         System.out.println("findProductByCategory");
         
         Category category = new Category();
-        category.setCategoryId((long)1);
+        category.setCategoryId((long) 1);
         category.setName("Lacteos");
         
         boolean saved = categoryService.saveCategory(category.getName());
@@ -147,7 +147,7 @@ public class ProductServiceTest {
         assertNotNull(c);
 
         Product product1 = new Product();
-        product1.setProductId((long) 1);
+        product1.setProductId((long)1);
         product1.setName("Kumis");
         product1.setDescription("Mejor que el yogurt");
         product1.setCategoryId(category.getCategoryId());
@@ -159,7 +159,7 @@ public class ProductServiceTest {
         assertEquals(product1.getProductId(), p1.getProductId());
 
         Product product2 = new Product();
-        product2.setProductId((long) 2);
+        product2.setProductId((long)2);
         product2.setName("Yogurt");
         product2.setDescription("De mora");
         product2.setCategoryId(category.getCategoryId());
@@ -171,7 +171,7 @@ public class ProductServiceTest {
         assertEquals(product2.getProductId(), p2.getProductId());
 
         Product product3 = new Product();
-        product3.setProductId((long) 3);
+        product3.setProductId((long)3);
         product3.setName("Leche");
         product3.setDescription("fresca");
         product3.setCategoryId(category.getCategoryId());
@@ -182,9 +182,16 @@ public class ProductServiceTest {
         assertNotNull(p3);
         assertEquals(product3.getProductId(), p3.getProductId()); 
 
-        Product foundProducts = productService.findProductByCategory((long)1);
+        List<Product> foundProducts = productService.findProductByCategory((long)1);
 
         assertNotNull(foundProducts);
+        assertEquals(3, foundProducts.size());
+
+        for (Object obj : foundProducts) {
+            assertTrue(obj instanceof Product);
+            Product foundProduct = (Product) obj;
+            assertEquals((long)1, foundProduct.getCategoryId());
+        }
     }
 
     /**
